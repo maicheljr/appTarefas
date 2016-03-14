@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; style-src  'self' 'unsafe-inline' *">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title></title>
+
+  <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+
+  <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+  <link href="css/ionic.app.css" rel="stylesheet">
+-->
+
+<!-- ionic/angularjs js -->
+<script src="lib/ionic/js/ionic.bundle.js"></script>
+
+<!-- cordova script (this will be a 404 during development) -->
+<script src="lib/ngCordova/dist/ng-cordova.js"></script>
+<script src="js/ng-cordova.min.js"></script>
+<script src="cordova.js"></script>
+<script src="js/ClienteModel.js"></script>
+<script src="js/AgendaModel.js"></script>
+
+<!-- your app's js -->
+<script src="js/app.js"></script>
+
+
+
+</head>
+<body ng-app="starter"ng-controller = "mainController">
+
+  <ion-pane>
+    <ion-header-bar class="bar-assertive">
+
+      <h1 class="title">{{titulo}}</h1>
+      <div class="buttons">
+
+      </div>
+    </ion-header-bar>
+    <ion-tabs class=' tabs-color-assertive tabs-striped '>
+      <ion-tab title='Clientes'icon-on='icon ion-person-stalker' icon-off='icon ion-person-stalker'ng-controller="ClienteCtrl">
+        <ion-view>
+          <button class="btn-clie50" ng-click="onClienteAdd()"><i class="ion-ios-personadd-outline"></i></button>
+          <button class="btn-clie105" ng-click="onClickRemoveCliente()"><i class="ion-ios-minus-outline"></i></button>
+
+
+          <ion-content>
+            <a class="item " href="#">
+
+              <b>TOTAL DE CLIENTES</b>
+              <span class="badge badge-dark">{{lista.length}}</span>
+            </a>
+
+            <ion-list show-delete="deleteCLiente">
+              <ion-item ng-repeat="item in lista track by $index" >
+                <a class="item item-thumbnail-left" href="#">
+                  <img src="img\cliente2.png">
+                  <h2>{{item.nome}}</h2>
+                  <p>Tel: {{item.telefone}}</p>
+                  <p><h5>{{item.endereco}}</h5></p>
+                  <ion-delete-button class="ion-trash-b" ng-click = "onClienteRemove(item)" ></ion-delete-button>
+
+                  <ion-option-button class="button-positive" ng-click="onClienteEdit(item)">Editar</ion-option-button>
+                </a>
+              </ion-item>
+            </ion-list>
+          </ion-content>
+        </ion-view>
+      </ion-tab>
+      <ion-tab title='Agenda'icon-on='icon ion-calendar' icon-off='icon ion-calendar'ng-controller="AgendaCtrl" on-select="onTabSelect()">
+        <ion-view>
+          <button class="btn-clie50" ng-click="onAgendaAdd()"><i class="ion-ios-plus-outline"></i></button>
+          <button class="btn-clie105" ng-click="onClickRemoveAgenda()"><i class="icon ion-ios-minus-outline"></i></button>
+          <ion-content>
+            <a class="item" href="#">
+              <b>AGENDAMENTOS EM ABERTO</b>
+              <span class="badge badge-dark">{{listarAgenda.length}}</span>
+            </a>
+            <ion-refresher
+            pulling-text="Atualizando..."
+            on-refresh="onLoadAgenda()">
+          </ion-refresher>
+          <ion-list show-delete="deleteAgenda">
+            <ion-item ng-repeat="item in listarAgenda track by $index" >
+              <a class="item item-thumbnail-left" href="#">
+                <img src="img\calendar_clock.png">
+                <h2>{{item.nome}}</h2>
+                <p>Data: {{item.date}}</p>
+                <ion-delete-button class="ion-trash-b" ng-click = "onAgendaRemove(item)" ></ion-delete-button>
+                <ion-option-button class="button-positive" ng-click="onAgendaEdit(item)">Editar</ion-option-button>
+              </a>
+            </ion-item>
+          </ion-list>
+        </ion-content>
+      </ion-view>
+
+    </ion-tab>
+
+    <ion-tab title='Mapas'icon-on='icon ion-location' icon-off='icon ion-location'ng-controller="MapController" on-select="onTabSelect()">
+      <ion-view>
+        <button class="btn-map50" ng-click="onMap()"><i class="icon ion-pinpoint"></i></button>
+        <button class="btn-map105" ng-click="onMap()"><i class="icon ion-ios-people-outline"></i></button>
+        <button class="btn-map160" ng-click="onMap()"><i class="ion-map"></i></button>
+        <ion-content >
+          <div id="map" data-tap-disabled="false"></div>
+        </ion-content>
+      </ion-view>
+    </ion-tab>
+
+
+
+  </ion-tabs>
+
+</ion-pane>
+<script src="https://maps-api-ssl.google.com/maps/api/js?libraries=places"></script>
+</body>
+</html>
