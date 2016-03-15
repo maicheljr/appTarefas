@@ -14,12 +14,12 @@ this.save = function (){
   localStorage.setItem("listaAgenda",lista);
 
 }
-//adicionar item na lista de cliente
+//adicionar item na lista de Agendamento
 this.add = function(item){
   this.items.push(item);
 };
 
-//remover item da lista de clientes
+//remover item da lista de Agendamentos
 this.remove = function(item)  {
   var pos = this.items.indexOf(item);
   this.items.splice(pos,1);

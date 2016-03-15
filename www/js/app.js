@@ -27,7 +27,7 @@ angular.module('starter', ['ionic','ngCordova'])
   });
 })
 
-.controller('mainController', function ($scope,$ionicPopup,$ionicListDelegate) {
+.controller('mainCtrl', function ($scope,$ionicPopup,$ionicListDelegate) {
 
   //controla o Título da Aplicação
   $scope.titulo = "ClienteON";
@@ -43,12 +43,31 @@ angular.module('starter', ['ionic','ngCordova'])
 
 .controller("ClienteCtrl", function($scope,$ionicPopup,$ionicListDelegate,$cordovaGeolocation) {
 
+  $scope.onGPS = function(){
+
+
+    var posOptions = {
+      enableHighAccuracy: true,
+      timeout: 20000,
+      maximumAge: 0
+    };
+    $cordovaGeolocation.getCurrentPosition(posOptions).then(function () {
+      var lat  = position.coords.latitude;
+      var lng = position.coords.longitude;
+      //var myLatlng = new google.maps.LatLng(lat, lng);
+    }, function(err) {
+      alert("Lat: "+lat+"Lng: "+lng);
+      //console.log(err);
+    });
+
+
+  }
+
   function getNovoCliente(item,novo ){
     $scope.data = {};
     $scope.data.nome=item.nome;
     $scope.data.telefone=item.telefone;
     $scope.data.endereco=item.endereco;
-
 
     /**/
 
@@ -64,139 +83,145 @@ angular.module('starter', ['ionic','ngCordova'])
       buttons:[
         {text:"<b>Salvar</b>",
         onTap: function (e){
-          item.nome = $scope.data.nome;
-          item.telefone = $scope.data.telefone;
-          item.endereco = $scope.data.endereco;
-
-          if(novo){
-            cliente.add(item);
-          }
-          cliente.save();
-        },
-        type:'button-assertive'},
-        {text:"<b>Cancelar</b>"}
-      ]
-    });
-    $ionicListDelegate.closeOptionButtons();
-  };
-
-  //criando o objeto cliente
-  var cliente = new getCliente();
+          if($scope.data.nome  && $scope.data.telefone  && $scope.data.endereco ){
+            item.nome = $scope.data.nome;
+            item.telefone = $scope.data.telefone;
+            item.endereco = $scope.data.endereco;
 
 
-  // criando uma lista q irá receber os clientes
-  $scope.lista =  cliente.items;
-
-
-  $scope.onClienteRemove = function(item){
-    cliente.remove(item);
-    cliente.save();
-    $ionicListDelegate.closeOptionButtons();
-  };
-
-  //metodo que adiciona novos clientes
-  $scope.onClienteAdd = function(){
-    var item = {nome:"",telefone:"",endereco:"",latlng:""};
-    getNovoCliente(item,true);
-
-  };
-
-  $scope.onClienteEdit = function (item){
-    getNovoCliente(item, false);
-    cliente.save();
-  }
-
-})
-.controller('MapController', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
-
-  $scope.onMap = function() {
-
-    $ionicLoading.show({
-      template: '<ion-spinner class="spinner-assertive" icon="android"></ion-spinner><br/>Procurando Localização!'
-    });
-
-    var posOptions = {
-      enableHighAccuracy: true,
-      timeout: 20000,
-      maximumAge: 0
+            if(novo){
+              cliente.add(item);
+            }
+            cliente.save();
+          }else{ alert("Há Campos vazios!!!")}},
+          type:'button-assertive'},
+          {text:"<b>Cancelar</b>"}
+        ]
+      });
+      $ionicListDelegate.closeOptionButtons();
     };
-    $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
-      var lat  = position.coords.latitude;
-      var long = position.coords.longitude;
 
-      var myLatlng = new google.maps.LatLng(lat, long);
+    //criando o objeto cliente
+    var cliente = new getCliente();
+    //var pos = new getCoordenada();
 
-      var mapOptions = {
-        center: myLatlng,
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+
+    // criando uma lista q irá receber os clientes
+    $scope.lista =  cliente.items;
+
+
+    $scope.onClienteRemove = function(item){
+      cliente.remove(item);
+      cliente.save();
+      $ionicListDelegate.closeOptionButtons();
+    };
+
+    //metodo que adiciona novos clientes
+    $scope.onClienteAdd = function(){
+      var item = {nome:"",telefone:"",endereco:"",lat:"",lng:""};
+      getNovoCliente(item,true);
+      //alert("Lat: "+lat+"Lng: "+long);
+
+    };
+
+    $scope.onClienteEdit = function (item){
+      getNovoCliente(item, false);
+      cliente.save();
+    }
+
+  })
+  .controller('MapCtrl', function($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
+
+    $scope.onMap = function() {
+
+      $ionicLoading.show({
+        template: '<ion-spinner class="spinner-assertive" icon="android"></ion-spinner><br/>Procurando Localização!'
+      });
+
+      var posOptions = {
+        enableHighAccuracy: true,
+        timeout: 20000,
+        maximumAge: 0
       };
+      $cordovaGeolocation.getCurrentPosition(posOptions).then(function (position) {
+        var lat  = position.coords.latitude;
+        var long = position.coords.longitude;
 
-      var map = new google.maps.Map(document.getElementById("map"), mapOptions),
-      marker = new google.maps.Marker({
-                position: myLatlng,
-                map: map,
-                icon: 'img/marcador_32.png',
-                draggable:true
-          });
-
-      $scope.map = map;
-      $ionicLoading.hide();
-
-    }, function(err) {
-      $ionicLoading.hide();
-      console.log(err);
-    });
-  }
-})
-
-.controller('AgendaCtrl', function($scope,$ionicPopup,$ionicListDelegate,$ionicLoading){
-
-  var cliente = new getCliente();
-  var agenda = new getAgenda();
-
-  $scope.listarCliente = cliente.items;
-  $scope.listarAgenda = agenda.items;
-  $scope.deleteAgenda = false;
+        var myLatlng = new google.maps.LatLng(lat, long);
 
 
-  $scope.onClickRemoveAgenda = function(){
-    $scope.deleteAgenda = !$scope.deleteAgenda;
-  }
+        var mapOptions = {
+          center: myLatlng,
+          zoom: 15,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
 
-  $scope.onAgendaRemove = function(item){
-    agenda.remove(item);
-    agenda.save();
-    $ionicListDelegate.closeOptionButtons();
-  };
 
-  //metodo que adiciona novos clientes
-  $scope.onAgendaAdd = function(){
-    var item = {nome:"",date:""};
-    getNovaAgenda(item,true);
-    //agenda.save();
 
-  };
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions),
+        marker = new google.maps.Marker({
+          position: myLatlng,
+          map: map,
+          icon: 'img/marcador_32.png',
+          draggable:true
+        });
 
-  $scope.onAgendaEdit = function (item){
-    getNovaAgenda(item, false);
-    agenda.save();
-  };
 
-// ainda está bugggando
-  $scope.onloadAgenda = function() {
+        $scope.map = map;
+        $ionicLoading.hide();
 
-    console.log('Atualizando!');
-    $timeout( function() {
-      //simulate async response
-      $scope.listaCliente.push();
 
-      //Stop the ion-refresher from spinning
-      $scope.$broadcast('scroll.refreshComplete');
+      }, function(err) {
+        $ionicLoading.hide();
+        //console.log(err);
+      });
 
-    }, 1000);
+    }
+  })
 
-  };
+  .controller('AgendaCtrl', function($scope,$ionicPopup,$ionicListDelegate,$ionicLoading){
+
+    var cliente = new getCliente();
+    var agenda = new getAgenda();
+
+    $scope.listarCliente = cliente.items;
+    $scope.listarAgenda = agenda.items;
+    $scope.deleteAgenda = false;
+
+
+    $scope.onClickRemoveAgenda = function(){
+      $scope.deleteAgenda = !$scope.deleteAgenda;
+    }
+
+    $scope.onAgendaRemove = function(item){
+      agenda.remove(item);
+      agenda.save();
+      $ionicListDelegate.closeOptionButtons();
+    };
+
+    //metodo que adiciona novos clientes
+    $scope.onAgendaAdd = function(){
+      var item = {nome:"",date:""};
+      getNovaAgenda(item,true);
+      //agenda.save();
+
+    };
+
+    $scope.onAgendaEdit = function (item){
+      getNovaAgenda(item, false);
+      agenda.save();
+    };
+
+    // ainda está bugggando
+    $scope.onloadAgenda = function() {
+
+
+      $timeout( function() {
+        onTabSelect();
+
+      }, 1000);
+
+    };
 
 
 
@@ -217,12 +242,14 @@ angular.module('starter', ['ionic','ngCordova'])
         buttons:[
           {text:"<b>Salvar</b>",
           onTap: function (e){
-            item.nome = $scope.data.selected.nome;
-            item.date = $scope.data.date;
-            if(novo){
-              agenda.add(item);
-            }
-            agenda.save();
+            if ($scope.data.selected && $scope.data.date) {
+              item.nome = $scope.data.selected.nome;
+              item.date = $scope.data.date;
+              if(novo){
+                agenda.add(item);
+              }
+              agenda.save();
+            }else{alert("Há Campos vazios!!!")}
           },
           type:'button-assertive'},
           {text:"<b>Cancelar</b>"}
