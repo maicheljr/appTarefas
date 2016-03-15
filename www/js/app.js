@@ -136,6 +136,7 @@ angular.module('starter', ['ionic','ngCordova'])
       marker = new google.maps.Marker({
                 position: myLatlng,
                 map: map,
+                icon: 'img/marcador_32.png',
                 draggable:true
           });
 
