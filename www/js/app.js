@@ -41,13 +41,16 @@ angular.module('starter', ['ionic','ngCordova'])
 
 })
 
-.controller("ClienteCtrl", function($scope,$ionicPopup,$ionicListDelegate) {
+.controller("ClienteCtrl", function($scope,$ionicPopup,$ionicListDelegate,$cordovaGeolocation) {
 
   function getNovoCliente(item,novo ){
     $scope.data = {};
     $scope.data.nome=item.nome;
     $scope.data.telefone=item.telefone;
     $scope.data.endereco=item.endereco;
+
+
+    /**/
 
 
     $ionicPopup.show({
@@ -64,6 +67,7 @@ angular.module('starter', ['ionic','ngCordova'])
           item.nome = $scope.data.nome;
           item.telefone = $scope.data.telefone;
           item.endereco = $scope.data.endereco;
+
           if(novo){
             cliente.add(item);
           }
@@ -92,7 +96,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
   //metodo que adiciona novos clientes
   $scope.onClienteAdd = function(){
-    var item = {nome:"",telefone:"",endereco:""};
+    var item = {nome:"",telefone:"",endereco:"",latlng:""};
     getNovoCliente(item,true);
 
   };
@@ -128,7 +132,12 @@ angular.module('starter', ['ionic','ngCordova'])
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
-      var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+      var map = new google.maps.Map(document.getElementById("map"), mapOptions),
+      marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                draggable:true
+          });
 
       $scope.map = map;
       $ionicLoading.hide();
