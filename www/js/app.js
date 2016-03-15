@@ -30,7 +30,7 @@ angular.module('starter', ['ionic','ngCordova'])
 .controller('mainController', function ($scope,$ionicPopup,$ionicListDelegate) {
 
   //controla o Título da Aplicação
-  $scope.titulo = "Cliente";
+  $scope.titulo = "ClienteON";
   // controla icone de deletar clientes
   $scope.deleteCLiente = false;
 
