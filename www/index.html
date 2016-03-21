@@ -49,7 +49,7 @@
 
           <ion-content>
             <a class="item " href="#">
-              <b>TOTAL DE CLIENTES</b>
+              <b class="assertive">TOTAL DE CLIENTES</b>
               <span class="badge badge-dark">{{lista.length}}</span>
             </a>
 
@@ -57,7 +57,7 @@
               <ion-item ng-repeat="item in lista track by $index" >
                 <a class="item item-thumbnail-left" href="#">
                   <img src="img\cliente2.png">
-                  <h2>{{item.nome}}</h2>
+                  <h2 class="assertive">{{item.nome}}</h2>
                   <p>Tel: {{item.telefone}}</p>
                   <p><h5>{{item.endereco}}</h5></p>
                   <p><h5>{{item.latlng}}</h5></p>
