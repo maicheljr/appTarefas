@@ -212,20 +212,15 @@ angular.module('starter', ['ionic','ngCordova'])
       agenda.save();
     };
 
-    // ainda está bugggando
-    $scope.onloadAgenda = function() {
-
-
-      $timeout( function() {
-        onTabSelect();
-
-      }, 1000);
-
+    $scope.onLoad = function() {
+      
+      $scope.$broadcast('scroll.refreshComplete');
+      $scope.$apply()
     };
 
 
-
     function getNovaAgenda(item,novo ){
+
       $scope.data = {};
       $scope.data.nome=item.nome;
       $scope.data.date=item.date;
@@ -234,9 +229,9 @@ angular.module('starter', ['ionic','ngCordova'])
         title:"<b>Novo Agendamento<b>",
         scope:$scope,
         template:"<div class='list list-inset'>"+
-        "<select ng-model='data.selected' ng-options='item.nome for item in listarCliente track by item.nome'>"+
-        "<option value=''>{{item.nome}}</option></select>"+
-        " <label class='item item-input'> <input type='text' placeholder='{{selected.nome}}' autofocus='true' ></label>"+
+        "<label class='item item-input'><select   ng-model='data.selected'  ng-options='item.nome for item in listarCliente track by item.nome'>"+
+        "<option value=''>{{item.nome}}</option></select></label>"+
+        " <label class='item item-input'> <input type='text' placeholder='{{data.selected.nome}}' autofocus='false' ></label>"+
         " <label class='item item-input'> <input type='date' placeholder='Data'ng-model='data.date'>  </label> "+
         " </div>",
         buttons:[

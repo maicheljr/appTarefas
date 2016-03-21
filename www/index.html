@@ -45,24 +45,20 @@
         <ion-view>
           <button class="btn-clie50" ng-click="onClienteAdd()"><i class="ion-ios-personadd-outline"></i></button>
           <button class="btn-clie105" ng-click="onClickRemoveCliente()"><i class="ion-ios-minus-outline"></i></button>
-
-
           <ion-content>
             <a class="item " href="#">
-              <b>TOTAL DE CLIENTES</b>
+              <b class="assertive">TOTAL DE CLIENTES</b>
               <span class="badge badge-dark">{{lista.length}}</span>
             </a>
-
             <ion-list show-delete="deleteCLiente">
               <ion-item ng-repeat="item in lista track by $index" >
                 <a class="item item-thumbnail-left" href="#">
                   <img src="img\cliente2.png">
-                  <h2>{{item.nome}}</h2>
+                  <h2 class="assertive">{{item.nome}}</h2>
                   <p>Tel: {{item.telefone}}</p>
                   <p><h5>{{item.endereco}}</h5></p>
                   <p><h5>{{item.latlng}}</h5></p>
                   <ion-delete-button class="ion-trash-b" ng-click = "onClienteRemove(item)" ></ion-delete-button>
-
                   <ion-option-button class="button-positive" ng-click="onClienteEdit(item)">Editar</ion-option-button>
                 </a>
               </ion-item>
@@ -79,10 +75,11 @@
               <b>AGENDAMENTOS EM ABERTO</b>
               <span class="badge badge-dark">{{listarAgenda.length}}</span>
             </a>
-            <ion-refresher
+          <ion-refresher
             pulling-text="Atualizando..."
-            on-refresh="onLoadAgenda()">
+            on-refresh="onLoad()">
           </ion-refresher>
+
           <ion-list show-delete="deleteAgenda">
             <ion-item ng-repeat="item in listarAgenda track by $index" >
               <a class="item item-thumbnail-left" href="#">
@@ -105,6 +102,10 @@
         <button class="btn-map105" ng-click="onMap()"><i class="icon ion-ios-people-outline"></i></button>
         <button class="btn-map160" ng-click="onMap()"><i class="ion-map"></i></button>
         <ion-content >
+          <ion-refresher
+            pulling-text="Atualizando..."
+            on-refresh="onMap()">
+          </ion-refresher>
           <div id="map" data-tap-disabled="false"></div>
         </ion-content>
       </ion-view>
