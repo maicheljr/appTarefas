@@ -24,6 +24,8 @@ angular.module('starter', ['ionic','ngCordova'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+
   });
 })
 
@@ -43,61 +45,81 @@ angular.module('starter', ['ionic','ngCordova'])
 
 .controller("ClienteCtrl", function($scope,$ionicPopup,$ionicListDelegate,$cordovaGeolocation) {
 
-  $scope.onGPS = function(){
 
-
-    var posOptions = {
-      enableHighAccuracy: true,
-      timeout: 20000,
-      maximumAge: 0
-    };
-    $cordovaGeolocation.getCurrentPosition(posOptions).then(function () {
-      var lat  = position.coords.latitude;
-      var lng = position.coords.longitude;
-      //var myLatlng = new google.maps.LatLng(lat, lng);
-    }, function(err) {
-      alert("Lat: "+lat+"Lng: "+lng);
-      //console.log(err);
-    });
-
-
-  }
 
   function getNovoCliente(item,novo ){
+
+
+
     $scope.data = {};
     $scope.data.nome=item.nome;
     $scope.data.telefone=item.telefone;
     $scope.data.endereco=item.endereco;
+    $scope.data.lat = item.lat;
+    $scope.data.lng = item.lng;
 
     /**/
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+       alert( 'Geolocation is not supported by this browser');
+    }
+    var latitude = '';
+    var longitude = '';
 
+function showPosition(position) {
+
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+
+    $scope.latitude = latitude.toFixed(5);
+    $scope.longitude = longitude.toFixed(5);
 
     $ionicPopup.show({
+
       title:"<b>Novo Cliente<b>",
       scope:$scope,
-      template:"<div class='list list-inset'>"+
+      template:
+      "<div class='list list-inset'>"+
       " <label class='item item-input'> <input type='text' placeholder='Nome' autofocus='true' ng-model='data.nome'>  </label>"+
       " <label class='item item-input'> <input type='tel' placeholder='Telefone'ng-model='data.telefone'>  </label> "+
       " <label class='item item-input'> <input type='text' placeholder='Endereco'ng-model='data.endereco'>  </label>"+
+      " <label class='item item-input'> <input type='text'   ng-model='data.lat' >"+$scope.latitude+"</input></label>"+
+      " <label class='item item-input'> <input type='text'   ng-model='data.lng'>"+$scope.longitude+"</input></label>"+
       " </div>",
       buttons:[
         {text:"<b>Salvar</b>",
         onTap: function (e){
-          if($scope.data.nome  && $scope.data.telefone  && $scope.data.endereco ){
+
+          if($scope.data.nome  && $scope.data.telefone  && $scope.data.endereco){
             item.nome = $scope.data.nome;
             item.telefone = $scope.data.telefone;
             item.endereco = $scope.data.endereco;
+            item.lat = $scope.latitude;
+            item.lng =  $scope.longitude;
 
-
-            if(novo){
+          if(novo){
               cliente.add(item);
             }
-            cliente.save();
-          }else{ alert("Há Campos vazios!!!")}},
-          type:'button-assertive'},
-          {text:"<b>Cancelar</b>"}
+              cliente.save();
+            }else{
+              alert("Há Campos vazios!!!")}
+              //onClienteAdd();
+            },
+
+              type:"button-assertive"},
+
+            {text:"<b>Sair</b>"}
+
         ]
       });
+
+
+
+}
+
+
+
       $ionicListDelegate.closeOptionButtons();
     };
 
@@ -188,6 +210,10 @@ angular.module('starter', ['ionic','ngCordova'])
     $scope.listarAgenda = agenda.items;
     $scope.deleteAgenda = false;
 
+    $scope.formatDate = function(date){
+             var dateOut = new Date(date);
+             return dateOut;
+       };
 
     $scope.onClickRemoveAgenda = function(){
       $scope.deleteAgenda = !$scope.deleteAgenda;
@@ -201,7 +227,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
     //metodo que adiciona novos clientes
     $scope.onAgendaAdd = function(){
-      var item = {nome:"",date:""};
+      var item = {nome:"",date:"",hora:""};
       getNovaAgenda(item,true);
       //agenda.save();
 
@@ -212,39 +238,29 @@ angular.module('starter', ['ionic','ngCordova'])
       agenda.save();
     };
 
-    // ainda está bugggando
-    $scope.onloadAgenda = function() {
-
-
-      $timeout( function() {
-        onTabSelect();
-
-      }, 1000);
-
-    };
-
-
-
     function getNovaAgenda(item,novo ){
       $scope.data = {};
       $scope.data.nome=item.nome;
       $scope.data.date=item.date;
+      $scope.data.hora=item.hora;
 
       $ionicPopup.show({
         title:"<b>Novo Agendamento<b>",
         scope:$scope,
         template:"<div class='list list-inset'>"+
-        "<label class='item item-input'><select ng-model='data.selected' ng-options='item.nome for item in listarCliente track by item.nome'>"+
+        "<label class='item item-input'><select ng-model='data.cliente' ng-options='item.nome for item in listarCliente track by item.nome'>"+
         "<option value=''>{{item.nome}}</option></select></label>"+
-        " <label class='item item-input'> <input type='text' placeholder='{{data.selected.nome}}' autofocus='true' ></label>"+
-        " <label class='item item-input'> <input type='date' placeholder='Data'ng-model='data.date'>  </label> "+
+        " <label class='item item-input'> <input type='text' placeholder='{{data.cliente.nome}}' ></label>"+
+        " <label class='item item-input'> <input  data-date-format='DD MMMM YYYY'type='date' ng-model='data.date'>  </label> "+
+        " <label class='item item-input'> <input type='text' placeholder='Hora'ng-model='data.hora'>  </label> "+
         " </div>",
         buttons:[
           {text:"<b>Salvar</b>",
           onTap: function (e){
-            if ($scope.data.selected && $scope.data.date) {
-              item.nome = $scope.data.selected.nome;
+            if ($scope.data.cliente && $scope.data.date && $scope.data.hora) {
+              item.nome = $scope.data.cliente.nome;
               item.date = $scope.data.date;
+              item.hora = $scope.data.hora;
               if(novo){
                 agenda.add(item);
               }

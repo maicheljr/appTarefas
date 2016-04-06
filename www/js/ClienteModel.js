@@ -1,15 +1,17 @@
 function getCliente(){
   this.items = [];
 
+  // comando para listar os itens
   var lista = localStorage.getItem("listaCliente");
 
   // se lista diferente de vazio pega os itens e monta no formato Json
   if (lista !== null)
   this.items = angular.fromJson(lista);
 
-  // salvar os itens
+  // metodo para salvar os dados
   this.save = function (){
 
+    //converter a uma string para formato json
     var lista = angular.toJson(this.items);
     localStorage.setItem("listaCliente",lista);
   }
