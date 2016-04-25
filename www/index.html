@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,10 +20,11 @@
 <!-- cordova script (this will be a 404 during development) -->
 <script src="lib/ngCordova/dist/ng-cordova.js"></script>
 <script src="lib/jquery-2.2.2.min/index.js"></script>
+<script src="lib/angular-ui-mask/src/mask.js"></script>
 <script src="js/ng-cordova.min.js"></script>
 <script src="cordova.js"></script>
 <script src="js/ClienteModel.js"></script>
-
+<script src="js/UtilModel.js"></script>
 <script src="js/AgendaModel.js"></script>
 <!-- your app's js -->
 <script src="js/app.js"></script>
@@ -52,13 +54,12 @@
               <span class="badge badge-dark">{{lista.length}}</span>
             </a>
             <ion-list show-delete="deleteCLiente">
-              <ion-item ng-repeat="item in lista track by $index | orderBy:'item.nome'" >
+              <ion-item ng-repeat="item in lista  | orderBy:'nome'" >
                 <a class="item item-thumbnail-left" href="#">
                   <img src="img\cliente2.png">
                   <h2 class="assertive">{{item.nome}}</h2>
                   <p>Tel: {{item.telefone}}</p>
-                  <p><h5>{{item.endereco}}</h5></p>
-                  <p><h5>{{item.latlng}}</h5></p>
+                  <p><h5>{{item.endereco }} , {{item.cidade}}-{{item.uf}}</h5></p>
                   <ion-delete-button class="ion-trash-b" ng-click = "onClienteRemove(item)" ></ion-delete-button>
                   <ion-option-button class="button-positive" ng-click="onClienteEdit(item)">Editar</ion-option-button>
                 </a>
@@ -82,14 +83,12 @@
           </ion-refresher>
 
           <ion-list show-delete="deleteAgenda">
-            <ion-item ng-repeat="item in listarAgenda track by $index" >
+            <!---<ion-item ng-repeat="item in listarAgenda track by $index" --->
+            <ion-item ng-repeat="item in listarAgenda | orderBy:'data'">
               <a class="item item-thumbnail-left" href="#">
                 <img src="img\calendar_clock.png">
-                <h2>{{item.nome}}</h2>
-                Data:
-                <b ng-bind="formatDate(item.date) |  date:'MM/dd/yyyy'"> </b>
-
-
+                <h2 ng-bind ="Upper(item.nome) | NOME:''"></h2>
+                Data:<b ng-bind="formatDate(item.date) |  date:'dd/MM/yyyy'"> </b>
                 <p>Hora: {{item.hora}}</p>
                 <ion-delete-button class="ion-trash-b" ng-click = "onAgendaRemove(item)" ></ion-delete-button>
                 <ion-option-button class="button-positive" ng-click="onAgendaEdit(item)">Editar</ion-option-button>
@@ -103,9 +102,9 @@
 
     <ion-tab title='Mapas'icon-on='icon ion-location' icon-off='icon ion-location'ng-controller="MapCtrl" on-select="onTabSelect()">
       <ion-view>
-        <button class="btn-map50" ng-click="onMap()"><i class="icon ion-pinpoint"></i></button>
-        <button class="btn-map105" ng-click="onMap()"><i class="icon ion-ios-people-outline"></i></button>
-        <button class="btn-map160" ng-click="onMap()"><i class="ion-map"></i></button>
+        <button class="btn-map50" ng-click="onMap(1)"><i class="icon ion-pinpoint"></i></button>
+        <button class="btn-map105" ng-click="onMap(2)"><i class="icon ion-ios-people-outline"></i></button>
+        <button class="btn-map160" ng-click="showToast('teste com toast!!!','short','top')"><i class="ion-map"></i></button>
         <ion-content >
           <ion-refresher
             pulling-text="Atualizando..."
